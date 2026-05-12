@@ -99,7 +99,7 @@ do
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   --  See `:help vim.o`
@@ -110,7 +110,7 @@ do
   vim.o.number = true
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
-  -- vim.o.relativenumber = true
+  vim.o.relativenumber = true
 
   -- Enable mouse mode, can be useful for resizing splits for example!
   vim.o.mouse = 'a'
@@ -122,7 +122,7 @@ do
   --  Schedule the setting after `UiEnter` because it can increase startup-time.
   --  Remove this option if you want your OS clipboard to remain independent.
   --  See `:help 'clipboard'`
-  vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
+  -- vim.schedule(function() vim.o.clipboard = 'unnamedplus' end)
 
   -- Enable break indent
   vim.o.breakindent = true
@@ -172,6 +172,9 @@ do
   -- See `:help 'confirm'`
   vim.o.confirm = true
 
+  -- Add terminal gui colors for tmux
+  vim.o.termguicolors = true
+
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
 
@@ -212,12 +215,6 @@ do
   -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
   -- or just use <C-\><C-n> to exit terminal mode
   vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
-
-  -- TIP: Disable arrow keys in normal mode
-  -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-  -- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-  -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-  -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
   -- Keybinds to make split navigation easier.
   --  Use CTRL+<hjkl> to switch between windows
@@ -262,6 +259,9 @@ do
   --
   --  To inspect plugin state and pending updates, run
   --    :lua vim.pack.update(nil, { offline = true })
+  --
+  -- My first mapping!
+  vim.keymap.set('n', '<leader>sp', function() vim.pack.update(nil, { offline = true }) end, { desc = '[S]earch [P]lugins' })
   --
   --  To update plugins, run
   --    :lua vim.pack.update()
@@ -360,6 +360,7 @@ do
       topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
       changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
     },
+    current_line_blame = true,
   }
 
   -- Useful plugin to show you pending keybinds.
@@ -394,7 +395,14 @@ do
   -- Load the colorscheme here.
   -- Like many other themes, this one has different styles, and you could load
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  vim.cmd.colorscheme 'tokyonight-night'
+  -- vim.cmd.colorscheme 'tokyonight-night'
+
+  vim.pack.add { gh 'Mofiqul/vscode.nvim' }
+  require('vscode').setup {
+    style = 'dark',
+    italic_comments = false,
+  }
+  vim.cmd.colorscheme 'vscode'
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -438,6 +446,22 @@ do
   -- cursor location to LINE:COLUMN
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
+
+  -- mini.statusline applies its own MiniStatusline* highlight groups after setup,
+  -- overriding the colorscheme. Re-apply vscode colors last so they stick.
+  local function apply_vscode_statusline_colors()
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeNormal',  { fg = '#1E1E1E', bg = '#007ACC', bold = true })
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeInsert',  { fg = '#1E1E1E', bg = '#4EC9B0', bold = true })
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeVisual',  { fg = '#1E1E1E', bg = '#C586C0', bold = true })
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeReplace', { fg = '#1E1E1E', bg = '#CE9178', bold = true })
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeCommand', { fg = '#1E1E1E', bg = '#DCDCAA', bold = true })
+    vim.api.nvim_set_hl(0, 'MiniStatuslineModeOther',   { fg = '#1E1E1E', bg = '#9CDCFE', bold = true })
+  end
+  apply_vscode_statusline_colors()
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    pattern = 'vscode',
+    callback = apply_vscode_statusline_colors,
+  })
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
