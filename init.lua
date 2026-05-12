@@ -710,6 +710,11 @@ do
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
+    roslyn = {
+      cmd_env = {
+        ZeroQLOnBuildTriggerEnabled = 'False',
+      },
+    },
     -- clangd = {},
     -- gopls = {},
     -- pyright = {},
@@ -766,7 +771,18 @@ do
   }
 
   -- Automatically install LSPs and related tools to stdpath for Neovim
-  require('mason').setup {}
+
+  require('mason').setup {
+    registries = {
+      'github:Crashdummyy/mason-registry',
+      'github:mason-org/mason-registry',
+    }
+  }
+
+  vim.pack.add { gh 'seblyng/roslyn.nvim' }
+  require('roslyn').setup {
+    ft = { "cs" }
+  }
 
   -- Ensure the servers and tools above are installed
   --
@@ -922,7 +938,8 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc',
+    "hyprlang", "css", "c_sharp", "razor"}
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
