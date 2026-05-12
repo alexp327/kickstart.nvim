@@ -779,6 +779,7 @@ do
     }
   }
 
+  -- add roslyn config stuff idrk
   vim.pack.add { gh 'seblyng/roslyn.nvim' }
   require('roslyn').setup {
     ft = { "cs" }
@@ -906,6 +907,16 @@ do
 
     sources = {
       default = { 'lsp', 'path', 'snippets' },
+      per_filetype = {
+        sql = { 'dadbod', 'lsp', 'path', 'snippets' },
+      },
+      providers = {
+        dadbod = {
+          name = 'Dadbod',
+          module = 'vim_dadbod_completion.blink',
+          score_offset = 85,
+        },
+      },
     },
 
     snippets = { preset = 'luasnip' },
@@ -1012,6 +1023,15 @@ do
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   -- require 'custom.plugins'
+
+  -- [[ dadbod — database UI and SQL completion ]]
+  vim.pack.add {
+    { src = gh 'tpope/vim-dadbod' },
+    { src = gh 'kristijanhusak/vim-dadbod-ui' },
+    { src = gh 'kristijanhusak/vim-dadbod-completion' },
+  }
+  vim.g.db_ui_use_nerd_fonts = 1
+  vim.keymap.set('n', '<leader>db', '<cmd>DBUIToggle<cr>', { desc = '[D]ata[B]ase UI' })
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
