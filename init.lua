@@ -1032,7 +1032,16 @@ do
   }
   vim.g.db_ui_use_nerd_fonts = 1
   vim.keymap.set('n', '<leader>db', '<cmd>DBUIToggle<cr>', { desc = '[D]ata[B]ase UI' })
+
+  -- tmux navigator
+  vim.pack.add { gh 'christoomey/vim-tmux-navigator' }
+  vim.keymap.set('n', '<C-h>', '<cmd>TmuxNavigateLeft<cr>',  { desc = 'Navigate Left' })
+  vim.keymap.set('n', '<C-j>', '<cmd>TmuxNavigateDown<cr>',  { desc = 'Navigate Down' })
+  vim.keymap.set('n', '<C-k>', '<cmd>TmuxNavigateUp<cr>',    { desc = 'Navigate Up' })
+  vim.keymap.set('n', '<C-l>', '<cmd>TmuxNavigateRight<cr>', { desc = 'Navigate Right' })
+
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
