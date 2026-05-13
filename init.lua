@@ -950,7 +950,7 @@ do
 
   -- Ensure basic parsers are installed
   local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc',
-    "hyprlang", "css", "c_sharp", "razor"}
+    "hyprlang", "css", "c_sharp", "razor", "sql" }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
@@ -1025,6 +1025,7 @@ do
   -- require 'custom.plugins'
 
   -- [[ dadbod — database UI and SQL completion ]]
+  vim.g.db_ui_execute_on_save = 0
   vim.pack.add {
     { src = gh 'tpope/vim-dadbod' },
     { src = gh 'kristijanhusak/vim-dadbod-ui' },
